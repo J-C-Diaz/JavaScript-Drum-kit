@@ -58,16 +58,29 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  document.addEventListener('keydown', function(e){
+  function playSound(e){
     const audio = document.querySelector(`audio[data-key ="${e.keyCode}"]`);
     if (!audio){
       return;
     }
+    audio.currentTime = 0; //restart audio so it can play again if key is pressed before sound has ended
     audio.play();
 
-    const letterSquare = document.querySelector(`div[data-key ="${e.keyCode}"]`);
-    letterSquare.classList.toggle('playing')
-  });
+    const key = document.querySelector(`div[data-key ="${e.keyCode}"]`);
+    key.classList.add('playing');
+  }
+
+  function removeTransition(e){
+    if(e.propertyName != 'transform'){ //only want to toggle on end of transformation not each transition
+      return
+    }
+    this.classList.remove('playing');
+  }
+
+  document.addEventListener('keydown', playSound);
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition)); //each key needs its own event listener
+
 </script>
 
 
